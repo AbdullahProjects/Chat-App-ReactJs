@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #01aa85;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: "Jost";
+}
+
+.auth-input-field {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 15px;
+  width: 100%;
+  outline: none;
+  background-color: #01aa8513;
+  border-radius: 4px;
+}
+
+.auth-input-field::placeholder {
+  font-size: 15px;
+  font-weight: 400;
+}
