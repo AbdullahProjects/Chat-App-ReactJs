@@ -2,9 +2,56 @@ import React, { useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { IoMdClose } from "react-icons/io";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
-const SearchModal = () => {
+const SearchModal = ({ startChat }) => {
   const [showSearchModal, setSearchModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const searchUsersFromFirebase = async () => {
+    if (!searchTerm.trim()) {
+      alert("Please enter a search term");
+      return;
+    }
+
+    try {
+      // Start Loading
+      setLoading(true);
+
+      // Search docs
+      const normalizeSearch = searchTerm;
+      console.log(normalizeSearch);
+      const q = query(
+        collection(db, "user"),
+        where("fullName", ">=", normalizeSearch)
+        // where("fullName", "<=", normalizeSearch + "\uf8ff")
+      );
+
+      const foundUsers = [];
+      const querySnapshots = await getDocs(q);
+      if (querySnapshots.docs.length > 0) {
+        querySnapshots.forEach((doc) => {
+          foundUsers.push(doc.data());
+        });
+
+        setUsers(foundUsers);
+      } else {
+        setUsers([]);
+      }
+
+      if (foundUsers.length === 0) {
+        alert("No users found");
+      }
+    } catch (e) {
+      console.log("Error while searching users from firebase" + e);
+      alert(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -15,7 +62,7 @@ const SearchModal = () => {
 
   /* Style the vertical scrollbar */
   .search-modal-scroll::-webkit-scrollbar {
-    width: 8px;
+    width: 0px;
   }
 
   .search-modal-scroll::-webkit-scrollbar-track {
@@ -43,39 +90,49 @@ const SearchModal = () => {
 
         {showSearchModal ? (
           <div className="fixed inset-0 flex flex-col items-center justify-center bg-black/30">
-            <div className="bg-primary w-[30%] flex flex-col rounded-md">
-              <div className="flex flex-row items-center justify-between px-6 py-4 border-b border-white/80">
-                <h1 className="text-[18px] font-semibold text-white">
-                  Search Chat
-                </h1>
-                <IoMdClose
-                  className="text-white text-[20px] hover:cursor-pointer"
-                  onClick={() => setSearchModal(false)}
-                />
-              </div>
-              <div className="px-5 py-4 flex flex-col gap-5">
-                <div className="flex flex-row gap-2 items-center">
-                  <input
-                    type="text"
-                    placeholder="Enter username"
-                    className="outline-none w-full bg-white py-2.5 px-4 rounded-md"
+            <div
+              className="w-full h-screen flex justify-center items-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="bg-primary w-[30%] flex flex-col rounded-md">
+                <div className="flex flex-row items-center justify-between px-6 py-4 border-b border-white/80">
+                  <h1 className="text-[18px] font-semibold text-white">
+                    Search Chat
+                  </h1>
+                  <IoMdClose
+                    className="text-white text-[20px] hover:cursor-pointer"
+                    onClick={() => setSearchModal(false)}
                   />
-                  <div className="bg-white p-2.5 flex items-center justify-center rounded-full hover:cursor-pointer">
-                    <IoSearchOutline className="text-[18px] text-black" />
-                  </div>
                 </div>
-                <div className="search-modal-scroll flex flex-col gap-2 max-h-[40vh] overflow-scroll">
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
-                  <FindUserContainer />
+                <div className="px-5 py-4 flex flex-col gap-5">
+                  <div className="flex flex-row gap-2 items-center">
+                    <input
+                      type="text"
+                      placeholder="Enter username"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="outline-none w-full bg-white py-2.5 px-4 rounded-md"
+                    />
+                    <div
+                      onClick={() => searchUsersFromFirebase()}
+                      className="bg-white p-2.5 flex items-center justify-center rounded-full hover:cursor-pointer"
+                    >
+                      <IoSearchOutline className="text-[18px] text-black" />
+                    </div>
+                  </div>
+                  <div className="search-modal-scroll flex flex-col gap-2 max-h-[40vh] overflow-scroll">
+                    {loading ? (
+                      <p className="text-center text-white">Loading...</p>
+                    ) : (
+                      users.map((user, index) => (
+                        <FindUserContainer
+                          onClickFun={startChat}
+                          key={index}
+                          user={user}
+                        />
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -88,13 +145,18 @@ const SearchModal = () => {
   );
 };
 
-const FindUserContainer = () => {
+const FindUserContainer = ({ user, onClickFun }) => {
   return (
-    <div className="flex flex-row gap-3 bg-white/10 rounded-md items-center px-4 py-2 hover:cursor-pointer hover:bg-white/20">
+    <div
+      onClick={onClickFun}
+      className="flex flex-row gap-3 bg-white/10 rounded-md items-center px-4 py-2 hover:cursor-pointer hover:bg-white/20"
+    >
       <CgProfile className="text-[25px] text-white" />
       <div>
-        <h1 className="font-semibold text-white text-[15px]">Abdullah Khan</h1>
-        <p className="text-white/80 text-[14px]">abdullah.kakar@gmail.com</p>
+        <h1 className="font-semibold text-white text-[15px]">
+          {user.fullName}
+        </h1>
+        <p className="text-white/80 text-[14px]">{user.email}</p>
       </div>
     </div>
   );

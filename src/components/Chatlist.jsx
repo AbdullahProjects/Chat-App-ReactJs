@@ -27,6 +27,10 @@ const Chatlist = () => {
     "Taha Siddiqui",
   ]);
 
+  const startChatWithSearchedUser = () => {
+    alert("Chat started");
+  }
+
   return (
     <>
       <style>{`
@@ -71,7 +75,7 @@ const Chatlist = () => {
         </header>
         <div className="flex flex-row items-center justify-between w-full p-4">
           <p className="text-[14px] text-gray-600 font-medium">Messages (1)</p>
-          <SearchModal />
+          <SearchModal startChat={startChatWithSearchedUser}/>
         </div>
         <section className="custom-scroll w-full h-screen overflow-scroll">
           {chatsData.map((chat, index) => (
