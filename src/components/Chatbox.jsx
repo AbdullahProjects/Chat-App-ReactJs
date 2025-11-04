@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoMdLock } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { IoIosSend } from "react-icons/io";
 
 const Chatbox = () => {
+  const [message, setMessage] = useState("");
+  const [chatMessages, setChatMessages] = useState([]);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    const messageText = message;
+    setMessage("");
+
+    const newMessage = {
+      sender: "email",
+      text: messageText,
+      timestamp: {
+        seconds: Math.floor(Date.now() / 1000),
+        nanoseconds: 0,
+      },
+    };
+
+    setChatMessages((prevChatMessages) => [...prevChatMessages, newMessage]);
+  };
+
   return (
     <>
       <style>{`
@@ -40,15 +67,13 @@ const Chatbox = () => {
             <div className="flex flex-row gap-3 items-center">
               <CgProfile className="text-[25px] text-black" />
               <div>
-                <h1 className="font-semibold text-[16px]">Abdullah Khan</h1>
-                <p className="text-gray-500 text-[14px]">
-                  abdullah.kakar@gmail.com
-                </p>
+                <h1 className="font-semibold text-[16px]">Hamza</h1>
+                <p className="text-gray-500 text-[14px]">hamza01@gmail.com</p>
               </div>
             </div>
           </header>
           {/* Messages */}
-          <div className="scroll overflow-scroll h-[80vh] px-4 py-4 flex flex-col">
+          <div ref={scrollRef} className="scroll overflow-scroll h-[80vh] px-10 py-4 flex flex-col">
             <SenderMessage />
             <ReceiverMessage />
             <SenderMessage />
@@ -69,16 +94,23 @@ const Chatbox = () => {
             <ReceiverMessage />
           </div>
           {/* Send Message */}
-          <div className="h-[10vh] bg-white w-full px-6 py-2 flex flex-row items-center gap-10">
-            <input
-              type="text"
-              placeholder="Type message..."
-              className="w-full outline-none"
-            />
-            <div className="bg-primary rounded-full p-2 hover:cursor-pointer">
-              <IoIosSend className="text-[20px] text-white"/>
+          <form onSubmit={handleSendMessage}>
+            <div className="h-[10vh] bg-white w-full px-6 py-2 flex flex-row items-center gap-10">
+              <input
+                type="text"
+                placeholder="Type message..."
+                className="w-full outline-none"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="bg-primary rounded-full p-2 hover:cursor-pointer"
+              >
+                <IoIosSend className="text-[20px] text-white" />
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </section>
     </>
