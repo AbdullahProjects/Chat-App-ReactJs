@@ -1,9 +1,47 @@
-import React from 'react'
+import React, { Fragment } from "react";
+import { RiChatAiLine } from "react-icons/ri";
+import { RiLogoutCircleRLine } from "react-icons/ri";
+import { RiContactsBook3Line } from "react-icons/ri";
+import { MdOutlineNotificationsActive } from "react-icons/md";
 
 const Navlinks = () => {
   return (
-    <div>Navlinks</div>
-  )
-}
+    <Fragment>
+      <style>
+        {`
+        .nav-list-item{
+        font-size: 22px;
+        color: white;
+        }
+        .nav-list-item:hover{
+        cursor:pointer;
+        }
+        `}
+      </style>
+      <section className="sticky lg:static top-0 flex items-center lg:items-start lg:justify-center bg-primary w-full h-[70px] lg:w-[100px] lg:h-screen py-8">
+        <main className="flex flex-row lg:flex-col items-center justify-between w-full lg:gap-10 px-4">
+          <div >
+            <h1 className="text-white font-bold text-[22px]">Chat</h1>
+          </div>
 
-export default Navlinks
+          <ul className="flex flex-row lg:flex-col items-center gap-10">
+            <button>
+              <RiChatAiLine className="nav-list-item" />
+            </button>
+            <button>
+              <RiContactsBook3Line className="nav-list-item" />
+            </button>
+            <button>
+              <MdOutlineNotificationsActive className="nav-list-item" />
+            </button>
+            <button>
+              <RiLogoutCircleRLine RiChatAiLine className="nav-list-item" />
+            </button>
+          </ul>
+        </main>
+      </section>
+    </Fragment>
+  );
+};
+
+export default Navlinks;
