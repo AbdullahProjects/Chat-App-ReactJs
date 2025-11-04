@@ -3,8 +3,18 @@ import { RiChatAiLine } from "react-icons/ri";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { RiContactsBook3Line } from "react-icons/ri";
 import { MdOutlineNotificationsActive } from "react-icons/md";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebase";
 
 const Navlinks = () => {
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.log("Error while logout user: " + e);
+    }
+  };
+
   return (
     <Fragment>
       <style>
@@ -20,7 +30,7 @@ const Navlinks = () => {
       </style>
       <section className="sticky lg:static top-0 flex items-center lg:items-start lg:justify-center bg-primary w-full h-[70px] lg:w-[100px] lg:h-screen py-8">
         <main className="flex flex-row lg:flex-col items-center justify-between w-full lg:gap-10 px-4">
-          <div >
+          <div>
             <h1 className="text-white font-bold text-[22px]">Chat</h1>
           </div>
 
@@ -34,8 +44,8 @@ const Navlinks = () => {
             <button>
               <MdOutlineNotificationsActive className="nav-list-item" />
             </button>
-            <button>
-              <RiLogoutCircleRLine RiChatAiLine className="nav-list-item" />
+            <button onClick={handleSignOut}>
+              <RiLogoutCircleRLine className="nav-list-item" />
             </button>
           </ul>
         </main>

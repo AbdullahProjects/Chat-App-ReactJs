@@ -75,7 +75,7 @@ const Chatlist = () => {
         </div>
         <section className="custom-scroll w-full h-screen overflow-scroll">
           {chatsData.map((chat, index) => (
-            <div
+            <div key={index}
               className={`w-full flex flex-row justify-between items-center ${
                 chatsData.length - 1 === index ? "border-b-0" : "border-b"
               } border-gray-200 px-5 py-2 mb-2`}
