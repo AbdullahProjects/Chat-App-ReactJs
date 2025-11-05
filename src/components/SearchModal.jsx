@@ -26,8 +26,8 @@ const SearchModal = ({ startChat }) => {
       console.log(normalizeSearch);
       const q = query(
         collection(db, "user"),
-        where("fullName", ">=", normalizeSearch)
-        // where("fullName", "<=", normalizeSearch + "\uf8ff")
+        where("fullName", ">=", normalizeSearch), 
+        where("fullName", "<=", normalizeSearch + "\uf8ff")
       );
 
       const foundUsers = [];
@@ -89,7 +89,7 @@ const SearchModal = ({ startChat }) => {
         </button>
 
         {showSearchModal ? (
-          <div className="fixed inset-0 flex flex-col items-center justify-center bg-black/30">
+          <div className="fixed inset-0 flex flex-col items-center justify-center bg-black/30 z-50">
             <div
               className="w-full h-screen flex justify-center items-center"
               onClick={(e) => e.stopPropagation()}
@@ -129,6 +129,7 @@ const SearchModal = ({ startChat }) => {
                           onClickFun={startChat}
                           key={index}
                           user={user}
+                          setSearchModal={setSearchModal}
                         />
                       ))
                     )}
@@ -145,10 +146,13 @@ const SearchModal = ({ startChat }) => {
   );
 };
 
-const FindUserContainer = ({ user, onClickFun }) => {
+const FindUserContainer = ({ user, onClickFun, setSearchModal }) => {
   return (
     <div
-      onClick={onClickFun}
+      onClick={() => {
+        setSearchModal(false);
+        onClickFun(user);
+      }}
       className="flex flex-row gap-3 bg-white/10 rounded-md items-center px-4 py-2 hover:cursor-pointer hover:bg-white/20"
     >
       <CgProfile className="text-[25px] text-white" />

@@ -1,8 +1,6 @@
 import React, { Fragment } from "react";
 import { RiChatAiLine } from "react-icons/ri";
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { RiContactsBook3Line } from "react-icons/ri";
-import { MdOutlineNotificationsActive } from "react-icons/md";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 

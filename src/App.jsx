@@ -61,7 +61,7 @@ const App = () => {
         {user ? (
           <div className="w-full flex flex-col lg:flex-row items-start h-full">
             <Navlinks />
-            <Chatlist loginUser={user} setSelectedUser={setSelectedUser}/>
+            <Chatlist loginUser={user} selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
             <Chatbox selectedUser={selectedUser}/>
           </div>
         ) : (
