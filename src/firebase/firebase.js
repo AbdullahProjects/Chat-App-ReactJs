@@ -74,11 +74,15 @@ export const listenForChats = (setChats) => {
 };
 
 export const listendForMessages = (chatId, setChatMessages) => {
+  if (!chatId) return () => {}; // Return empty function if no chatId
+  
   const chatRef = collection(db, "chats", chatId, "messages");
-  onSnapshot(chatRef, (snapshot) => {
+  const unsubscribe = onSnapshot(chatRef, (snapshot) => {
     const messages = snapshot.docs.map((doc) => doc.data());
     setChatMessages(messages);
   });
+  
+  return unsubscribe; // Return unsubscribe function
 };
 
 

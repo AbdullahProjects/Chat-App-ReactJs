@@ -94,7 +94,7 @@ const SearchModal = ({ startChat }) => {
               className="w-full h-screen flex justify-center items-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-primary w-[30%] flex flex-col rounded-md">
+              <div className="bg-primary w-[80%] lg:w-[30%] flex flex-col rounded-md">
                 <div className="flex flex-row items-center justify-between px-6 py-4 border-b border-white/80">
                   <h1 className="text-[18px] font-semibold text-white">
                     Search Chat

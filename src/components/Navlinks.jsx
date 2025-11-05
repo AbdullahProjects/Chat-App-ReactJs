@@ -4,7 +4,7 @@ import { RiLogoutCircleRLine } from "react-icons/ri";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 
-const Navlinks = () => {
+const Navlinks = ({selectedUser}) => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
@@ -26,7 +26,7 @@ const Navlinks = () => {
         }
         `}
       </style>
-      <section className="sticky lg:static top-0 flex items-center lg:items-start lg:justify-center bg-primary w-full h-[70px] lg:w-[100px] lg:h-screen py-8">
+      <section className={`${selectedUser ? "hidden lg:flex" : "flex"} lg:static top-0 flex items-center lg:items-start lg:justify-center bg-primary w-full h-[70px] lg:w-[100px] lg:h-screen py-8`}>
         <main className="flex flex-row lg:flex-col items-center justify-between w-full lg:gap-10 px-4">
           <div>
             <h1 className="text-white font-bold text-[22px]">Chat</h1>

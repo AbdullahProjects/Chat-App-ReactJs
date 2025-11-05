@@ -1,25 +1,37 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoMdLock } from "react-icons/io";
-import { CgProfile } from "react-icons/cg";
 import { IoIosSend } from "react-icons/io";
 import AvatarImage from "./UserPicture";
-import { auth, formatDate, formatTime, listendForMessages, sendMessage } from "../firebase/firebase";
+import { FaArrowLeft } from "react-icons/fa";
+import {
+  auth,
+  formatDate,
+  formatTime,
+  listendForMessages,
+  sendMessage,
+} from "../firebase/firebase";
 
-const Chatbox = ({ selectedUser }) => {
+const Chatbox = ({ selectedUser, setSelectedUser }) => {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const scrollRef = useRef(null);
 
-  const chatId =
-    auth.currentUser?.uid < selectedUser?.uid
-      ? `${auth.currentUser?.uid}-${selectedUser?.uid}`
-      : `${selectedUser?.uid}-${auth.currentUser?.uid}`;
-  const user1 = auth.currentUser?.uid;
-  const user2 = selectedUser?.uid;
   const senderEmail = auth.currentUser?.email;
 
   useEffect(() => {
-    listendForMessages(chatId, (messages) => {
+    // Clear messages when switching chats
+    setChatMessages([]);
+    
+    // Only set up listener if we have a valid selectedUser
+    if (!selectedUser || !auth.currentUser) return;
+    
+    // Calculate chatId safely
+    const chatId =
+      auth.currentUser.uid < selectedUser.uid
+        ? `${auth.currentUser.uid}-${selectedUser.uid}`
+        : `${selectedUser.uid}-${auth.currentUser.uid}`;
+    
+    const unsubscribe = listendForMessages(chatId, (messages) => {
       // Sort messages by timestamp (oldest first, newest last)
       const sortedMessages = [...messages].sort((a, b) => {
         const timeA = a.timestamp?.seconds || 0;
@@ -28,7 +40,14 @@ const Chatbox = ({ selectedUser }) => {
       });
       setChatMessages(sortedMessages);
     });
-  }, [chatId]);
+    
+    // Cleanup: unsubscribe when component unmounts or selectedUser changes
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [selectedUser]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -38,18 +57,29 @@ const Chatbox = ({ selectedUser }) => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    if (!selectedUser || !auth.currentUser) return;
+    
     const messageText = message;
     setMessage("");
 
+    // Calculate chatId
+    const chatId =
+      auth.currentUser.uid < selectedUser.uid
+        ? `${auth.currentUser.uid}-${selectedUser.uid}`
+        : `${selectedUser.uid}-${auth.currentUser.uid}`;
+    
+    const user1 = auth.currentUser.uid;
+    const user2 = selectedUser.uid;
+
     const newMessage = {
-      sender: "email",
+      sender: senderEmail,
       text: messageText,
       timestamp: {
         seconds: Math.floor(Date.now() / 1000),
         nanoseconds: 0,
       },
     };
-    await sendMessage(messageText, chatId, user1, user2, selectedUser);
+    await sendMessage(messageText, chatId, user1, user2);
     setChatMessages((prevChatMessages) => [...prevChatMessages, newMessage]);
   };
 
@@ -81,7 +111,11 @@ const Chatbox = ({ selectedUser }) => {
   }
 `}</style>
 
-      <section className="hidden lg:flex w-full h-screen">
+      <section
+        className={`${
+          selectedUser ? "flex" : "hidden"
+        } lg:flex w-full h-screen`}
+      >
         {selectedUser == null ? (
           <BeforeChat />
         ) : (
@@ -89,6 +123,14 @@ const Chatbox = ({ selectedUser }) => {
             {/* Header with user info */}
             <header className="w-full h-[10vh] px-4 py-2 flex items-center bg-white border-b border-gray-200">
               <div className="flex flex-row gap-3 items-center">
+                <div
+                  className={`p-2 bg-primary/20 rounded-full ${
+                    selectedUser ? "block" : "hidden"
+                  } hover:cursor-pointer`}
+                  onClick={() => setSelectedUser(null)}
+                >
+                  <FaArrowLeft className="text-[18px]" />
+                </div>
                 <AvatarImage imageUrl={selectedUser?.image} />
                 <div>
                   <h1 className="font-semibold text-[16px]">
@@ -107,9 +149,13 @@ const Chatbox = ({ selectedUser }) => {
             >
               {chatMessages.map((msg, index) =>
                 msg.sender === senderEmail ? (
-                  <ReceiverMessage key={index} data={msg}/>
+                  <ReceiverMessage key={index} data={msg} />
                 ) : (
-                  <SenderMessage key={index} data={msg} selectedUser={selectedUser}/>
+                  <SenderMessage
+                    key={index}
+                    data={msg}
+                    selectedUser={selectedUser}
+                  />
                 )
               )}
             </div>
@@ -138,12 +184,11 @@ const Chatbox = ({ selectedUser }) => {
   );
 };
 
-
-const SenderMessage = ({data, selectedUser}) => {
+const SenderMessage = ({ data, selectedUser }) => {
   return (
     <div className="sender-message flex flex-col items-start gap-3 my-1">
       <div className="flex flex-row items-start gap-2.5 w-full">
-        <AvatarImage imageUrl={selectedUser?.image}/>
+        <AvatarImage imageUrl={selectedUser?.image} />
         <div className="bg-white flex items-center justify-center rounded-md px-4 py-2 shadow-sm max-w-[60%]">
           {data.text}
         </div>
@@ -156,7 +201,7 @@ const SenderMessage = ({data, selectedUser}) => {
   );
 };
 
-const ReceiverMessage = ({data}) => {
+const ReceiverMessage = ({ data }) => {
   return (
     <div className="reveiver-message flex flex-col items-start gap-3 self-end w-[60%] my-1">
       <div className="flex flex-row gap-2 w-full items-start justify-end">
@@ -167,7 +212,9 @@ const ReceiverMessage = ({data}) => {
           {data.text}
         </div>
       </div>
-      <p className="text-gray-500 text-[10px] self-end">{formatTime(data.timestamp)}</p>
+      <p className="text-gray-500 text-[10px] self-end">
+        {formatTime(data.timestamp)}
+      </p>
     </div>
   );
 };

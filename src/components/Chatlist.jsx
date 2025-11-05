@@ -42,7 +42,7 @@ const Chatlist = ({ loginUser, selectedUser, setSelectedUser }) => {
   }
 `}</style>
 
-      <section className="relative bg-white lg:flex flex-col items-start justify-start w-full h-screen lg:w-[42%] lg:border-r border-gray-200">
+      <section className={`relative bg-white ${selectedUser ? "hidden" : "flex"} lg:flex flex-col items-start justify-start w-full h-screen lg:w-[42%] lg:border-r border-gray-200`}>
         <header className="border-b border-gray-200 w-full px-4 py-4 flex flex-row justify-between">
           <div className="flex flex-row gap-3 items-center">
             <AvatarImage imageUrl={loginUser.image} />
