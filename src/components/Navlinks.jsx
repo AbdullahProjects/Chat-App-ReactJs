@@ -33,8 +33,8 @@ const Navlinks = ({selectedUser}) => {
           </div>
 
           <ul className="flex flex-row lg:flex-col items-center gap-8">
-            <button>
-              <RiChatAiLine className="nav-list-item" />
+            <button className="bg-white p-2 rounded-md hover:cursor-pointer">
+              <RiChatAiLine className="text-black/70 text-[22px]" />
             </button>
             {/* <button>
               <RiContactsBook3Line className="nav-list-item" />

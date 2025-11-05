@@ -125,7 +125,7 @@ const Chatbox = ({ selectedUser, setSelectedUser }) => {
               <div className="flex flex-row gap-3 items-center">
                 <div
                   className={`p-2 bg-primary/20 rounded-full ${
-                    selectedUser ? "block" : "hidden"
+                    selectedUser ? "block lg:hidden" : "hidden"
                   } hover:cursor-pointer`}
                   onClick={() => setSelectedUser(null)}
                 >
