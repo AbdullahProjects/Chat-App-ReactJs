@@ -4,23 +4,55 @@ import Register from "./components/Register";
 import Chatlist from "./components/Chatlist";
 import Chatbox from "./components/Chatbox";
 import Navlinks from "./components/Navlinks";
-import { auth } from "./firebase/firebase";
+import { auth, db } from "./firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const App = () => {
+  // const [checkingAuth, setCheckingAuth] = useState(true);
   const [isLogin, setIsLogin] = useState(true);
   const [user, setUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
+    const fetchUserData = async (authUser) => {
+      if (authUser) {
+        try {
+          // Fetch user document from Firestore
+          const userDocRef = doc(db, "user", authUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists()) {
+            // Combine auth user data with Firestore user data
+            const userData = {
+              ...authUser,
+              ...userDocSnap.data(),
+            };
+            setUser(userData);
+            console.log("User data from Firestore: ", userData);
+          } else {
+            // If document doesn't exist, just use auth user
+            setUser(authUser);
+            console.log("User document not found in Firestore");
+          }
+        } catch (error) {
+          console.error("Error fetching user data: ", error);
+          setUser(authUser);
+        }
+      } else {
+        setUser(null);
+      }
+    };
+
     const currentUser = auth.currentUser;
     if (currentUser) {
-      setUser(currentUser);
+      fetchUserData(currentUser);
     }
 
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      fetchUserData(authUser);
     });
 
-    return () => unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -29,8 +61,8 @@ const App = () => {
         {user ? (
           <div className="w-full flex flex-col lg:flex-row items-start h-full">
             <Navlinks />
-            <Chatlist />
-            <Chatbox />
+            <Chatlist loginUser={user} setSelectedUser={setSelectedUser}/>
+            <Chatbox selectedUser={selectedUser}/>
           </div>
         ) : (
           <div>

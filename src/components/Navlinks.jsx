@@ -34,16 +34,16 @@ const Navlinks = () => {
             <h1 className="text-white font-bold text-[22px]">Chat</h1>
           </div>
 
-          <ul className="flex flex-row lg:flex-col items-center gap-10">
+          <ul className="flex flex-row lg:flex-col items-center gap-8">
             <button>
               <RiChatAiLine className="nav-list-item" />
             </button>
-            <button>
+            {/* <button>
               <RiContactsBook3Line className="nav-list-item" />
             </button>
             <button>
               <MdOutlineNotificationsActive className="nav-list-item" />
-            </button>
+            </button> */}
             <button onClick={handleSignOut}>
               <RiLogoutCircleRLine className="nav-list-item" />
             </button>
