@@ -58,7 +58,7 @@ const Chatlist = ({ loginUser, selectedUser, setSelectedUser }) => {
           </div> */}
         </header>
         <div className="flex flex-row items-center justify-between w-full p-4">
-          <p className="text-[14px] text-gray-600 font-medium">Messages (1)</p>
+          <p className="text-[14px] text-gray-600 font-medium">Messages ({chatsData.length})</p>
           <SearchModal startChat={startChat} />
         </div>
         <section className="custom-scroll w-full h-screen overflow-scroll">
