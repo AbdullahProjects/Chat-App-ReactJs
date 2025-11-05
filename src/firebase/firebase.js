@@ -84,7 +84,7 @@ export const listendForMessages = (chatId, setChatMessages) => {
 
 // Helper function to format time as "1:30 PM"
 export const formatTime = (timestamp) => {
-  if (!timestamp || !timestamp.seconds) return '...';
+  if (!timestamp || !timestamp.seconds) return '';
   const date = new Date(timestamp.seconds * 1000);
   let hours = date.getHours();
   const minutes = date.getMinutes();
@@ -97,7 +97,7 @@ export const formatTime = (timestamp) => {
 
 // Helper function to format date as "12 Feb, 2025"
 export const formatDate = (timestamp) => {
-  if (!timestamp || !timestamp.seconds) return '...';
+  if (!timestamp || !timestamp.seconds) return '';
   const date = new Date(timestamp.seconds * 1000);
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const day = date.getDate();

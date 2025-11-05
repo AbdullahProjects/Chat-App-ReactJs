@@ -70,7 +70,7 @@ const Chatlist = ({ loginUser, selectedUser, setSelectedUser }) => {
                 onClick={() => startChat(otherUser)}
                 className={`w-full flex flex-row justify-between items-center hover:cursor-pointer ${
                   chatsData.length - 1 === index ? "border-b-0" : "border-b"
-                } border-gray-200 px-5 py-2 mb-2 ${otherUser?.email === selectedUser?.email? 'bg-primary/10':''}`}
+                } border-gray-200 px-5 py-3 ${otherUser?.email === selectedUser?.email? 'bg-primary/10':''}`}
               >
                 <div className="flex flex-row gap-3 items-center">
                   <AvatarImage imageUrl={otherUser.image}/>
@@ -78,7 +78,7 @@ const Chatlist = ({ loginUser, selectedUser, setSelectedUser }) => {
                     <h1 className="font-medium text-[15px] overflow-hidden text-ellipsis text-nowrap w-[180px]">
                       {otherUser.fullName}
                     </h1>
-                    <p className="text-gray-500 text-[13px]">
+                    <p className="text-gray-500 text-[13px] overflow-hidden text-ellipsis text-nowrap w-[180px]">
                       {chat.lastMessage}
                     </p>
                   </div>

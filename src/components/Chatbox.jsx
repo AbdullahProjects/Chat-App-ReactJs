@@ -49,7 +49,7 @@ const Chatbox = ({ selectedUser }) => {
         nanoseconds: 0,
       },
     };
-    await sendMessage(messageText, chatId, user1, user2);
+    await sendMessage(messageText, chatId, user1, user2, selectedUser);
     setChatMessages((prevChatMessages) => [...prevChatMessages, newMessage]);
   };
 
@@ -109,7 +109,7 @@ const Chatbox = ({ selectedUser }) => {
                 msg.sender === senderEmail ? (
                   <ReceiverMessage key={index} data={msg}/>
                 ) : (
-                  <SenderMessage key={index} data={msg}/>
+                  <SenderMessage key={index} data={msg} selectedUser={selectedUser}/>
                 )
               )}
             </div>
@@ -139,11 +139,11 @@ const Chatbox = ({ selectedUser }) => {
 };
 
 
-const SenderMessage = ({data}) => {
+const SenderMessage = ({data, selectedUser}) => {
   return (
     <div className="sender-message flex flex-col items-start gap-3 my-1">
       <div className="flex flex-row items-start gap-2.5 w-full">
-        <CgProfile className="text-[25px] text-black" />
+        <AvatarImage imageUrl={selectedUser?.image}/>
         <div className="bg-white flex items-center justify-center rounded-md px-4 py-2 shadow-sm max-w-[60%]">
           {data.text}
         </div>
@@ -158,12 +158,12 @@ const SenderMessage = ({data}) => {
 
 const ReceiverMessage = ({data}) => {
   return (
-    <div className="reveiver-message flex flex-col items-start gap-3 self-end">
+    <div className="reveiver-message flex flex-col items-start gap-3 self-end w-[60%] my-1">
       <div className="flex flex-row gap-2 w-full items-start justify-end">
         <p className="text-gray-500 text-[10px] self-center">
           {formatDate(data.timestamp)}
         </p>
-        <div className="bg-white flex items-center justify-center rounded-md px-4 py-2 shadow-sm max-w-[60%]">
+        <div className="bg-white flex items-center justify-center rounded-md px-4 py-2 shadow-sm">
           {data.text}
         </div>
       </div>
